@@ -1,0 +1,18 @@
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-thumb {
+  background: rgb(184, 180, 180);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgb(184, 180, 180);
+}
+::-webkit-scrollbar-track {
+  background: #f0f0f0;
+}
+::-webkit-scrollbar-corner {
+  background: #f0f0f0;
+}
+::-webkit-resizer {
+  background: #f0f0f0;
+}
