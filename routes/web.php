@@ -29,6 +29,7 @@ Route::prefix('admin')->group(function () {
             Route::get('/user/edit/{id}', 'edit');
             Route::patch('/user/update/{id}', 'update');
             Route::delete('/user/destroy/{id}', 'destroy');
+            Route::post('/user/status', 'statusUpdate');
         });
     });
 });

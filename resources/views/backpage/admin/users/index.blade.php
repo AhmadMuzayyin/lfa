@@ -58,15 +58,20 @@
                                                 <td>{{ $user->fullname }}</td>
                                                 <td>{{ $user->email }}</td>
                                                 <td>
-                                                    <div class="form-check form-switch">
-                                                        <input class="form-check-input" type="checkbox" role="switch"
-                                                            id="flexSwitchCheckDefault"
-                                                            {{ $user->status == true ? 'checked' : '' }}
+                                                    <form action="{{ url('admin/user/status') }}" method="POST">
+                                                        @csrf
+                                                        <input type="hidden" name="id" value="{{ $user->id }}">
+                                                        <button
+                                                            class="btn btn-sm btn-{{ $user->status == true ? 'primary' : 'danger' }}"
                                                             {{ $user->role == true ? 'disabled' : '' }}>
-                                                        <label class="form-check-label" for="flexSwitchCheckDefault">
-                                                            {{ $user->status == true ? 'Aktif' : 'Tidak Aktif' }}
-                                                        </label>
-                                                    </div>
+                                                            @if ($user->status == true)
+                                                                <i class='bx bx-user-check'></i>
+                                                            @else
+                                                                <i class='bx bx-user-x'></i>
+                                                            @endif
+                                                        </button>
+                                                        {{ $user->status == true ? 'Aktif' : 'Tidak Aktif' }}
+                                                    </form>
                                                 </td>
                                                 <td>
                                                     {{ $user->type == true ? 'Premium' : 'Free' }}
@@ -76,20 +81,22 @@
                                                 </td>
                                                 <td>
                                                     <div class="btn-group" role="group">
-                                                        <a href="{{ url('admin/user/detail') . '/' . $user->id }}"
-                                                            role="button" class="btn btn-primary">
+                                                        <button type="button" role="button"
+                                                            class="btn btn-primary open_modal" value="{{ $user->id }}">
                                                             <i class='bx bx-info-circle'></i>
-                                                        </a>
+                                                        </button>
                                                         <a href="{{ url('admin/user/edit') . '/' . $user->id }}"
                                                             role="button" class="btn btn-success">
                                                             <i class='bx bxs-edit-alt'></i>
                                                         </a>
-                                                        <form action="{{ url('admin/user/destroy') . '/' . $user->id }}" method="POST">
+                                                        <form action="{{ url('admin/user/destroy') . '/' . $user->id }}"
+                                                            method="POST">
                                                             @csrf
                                                             @method('DELETE')
                                                             <button type="submit"
                                                                 class="btn btn-danger {{ $user->role == true ? 'disabled' : '' }}"
-                                                                onclick="alert('Yakin untuk menghapus data ini?')">
+                                                                onclick="alert('Yakin untuk menghapus data ini?')"
+                                                                style="border-top-left-radius: 0; border-bottom-left-radius: 0;">
                                                                 <i class='bx bx-trash'></i>
                                                             </button>
                                                         </form>
@@ -109,14 +116,91 @@
 
             </div>
         </div>
+
+        {{-- Modal Show --}}
+        <div class="modal fade" id="modalShow" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">User Detail</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <tr>
+                                    <td>Nama Lengkap</td>
+                                    <td id="nama_show"></td>
+                                </tr>
+                                <tr>
+                                    <td>Username</td>
+                                    <td id="username_show"></td>
+                                </tr>
+                                <tr>
+                                    <td>Email</td>
+                                    <td id="email_show"></td>
+                                </tr>
+                                <tr>
+                                    <td>Status</td>
+                                    <td id="status_show"></td>
+                                </tr>
+                                <tr>
+                                    <td>Jenis Akun</td>
+                                    <td id="type_show"></td>
+                                </tr>
+                                <tr>
+                                    <td>Role</td>
+                                    <td id="role_show"></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <img class="img-fluid" id="img_show">
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     @else
         @include('backpage.admin.users.create')
     @endif
 @endsection
 @push('script')
+    <style>
+        .modal {
+            z-index: 999999999;
+        }
+    </style>
     <script>
         $(document).ready(function() {
-            $('#datatable').DataTable();
+            $('#datatable').DataTable({
+                select: true,
+            });
+
+            // Modal show
+            $('.open_modal').click(function(e) {
+                e.preventDefault();
+                var url = "{{ url('admin/user/detail') }}";
+                var id = $(this).val();
+                console.log(id);
+                $.get(url + '/' + id, function(data) {
+                    $('#nama_show').html(data.fullname);
+                    $('#username_show').html(data.username);
+                    $('#email_show').html(data.email);
+                    var status = data.status == 1 ? 'Aktif' : 'Tidak Aktif';
+                    $('#status_show').html(status);
+                    var type = data.type == 1 ? 'Premium' : 'Free';
+                    $('#type_show').html(type);
+                    var role = data.role == 1 ? 'Admin' : 'User';
+                    $('#role_show').html(role);
+                    var urlImg = "{{ Storage::url('app/public/uploads/profil/') }}";
+                    $('#img_show').attr('src', urlImg + data.image);
+                    $('#img_show').attr('alt', data.image);
+                    $('#modalShow').modal('show');
+                })
+            })
         });
     </script>
 @endpush

@@ -36,17 +36,7 @@ class AdminUserController extends Controller
             'gambar' => 'required|mimes:png,jpg|max:4050',
             'role' => 'required'
         ]);
-        if ($req->file('gambar') && $req->file('gambar')->isValid()) {
-            $path = storage_path('app/public/uploads/profil/');
-            $filename = $req->file('gambar')->hashName();
-            if (!file_exists($path)) {
-                mkdir($path, 0777, true);
-            }
-            Image::make($req->file('gambar'))->resize(300, 200, function ($cons) {
-                $cons->upsize();
-                $cons->aspectRatio();
-            })->save($path . $filename);
-        }
+        $filename = $req->file('gambar')->hashName();
         $user = new User();
         $user->fullname = $req->Nama_Lengkap;
         $user->username = $req->username;
@@ -57,11 +47,22 @@ class AdminUserController extends Controller
         $user->type = false;
         $user->role = $req->role;
         $user->save();
+        if ($req->file('gambar') && $req->file('gambar')->isValid()) {
+            $path = storage_path('app/public/uploads/profil/');
+            if (!file_exists($path)) {
+                mkdir($path, 0777, true);
+            }
+            Image::make($req->file('gambar'))->resize(300, 200, function ($cons) {
+                $cons->upsize();
+                $cons->aspectRatio();
+            })->save($path . $filename);
+        }
         return redirect()->back();
     }
     public function show($id)
     {
-        dd(User::findOrFail($id));
+        $user = User::findOrFail($id);
+        return response()->json($user->load('user_detail'), 200);
     }
     public function edit($id)
     {
@@ -77,6 +78,14 @@ class AdminUserController extends Controller
         $user_detail = UserDetail::firstWhere('user_id', $user->id);
         $user_detail != null ? $user_detail->delete() : '';
         $user->delete();
+        return redirect()->back();
+    }
+    public function statusUpdate(Request $req)
+    {
+        $user = User::find($req->id);
+        $status = $user->status == 1 ? 0 : 1;
+        $user->status = $status;
+        $user->save();
         return redirect()->back();
     }
 }
