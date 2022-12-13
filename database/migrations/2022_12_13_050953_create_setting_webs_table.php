@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -14,11 +13,17 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('user_payment_histories', function (Blueprint $table) {
+        Schema::create('setting_webs', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(User::class)->constrained();
-            $table->string('proof_payment');
-            $table->boolean('status'); //false (akun gratis) true (selesai dibayar)
+            $table->text('about');
+            $table->text('pustaka');
+            $table->text('artikel');
+            $table->text('akademi');
+            $table->text('join');
+            $table->text('kontak');
+            $table->string('logo_dark');
+            $table->string('logo_light');
+            $table->boolean('is_aktif');
             $table->timestamps();
         });
     }
@@ -30,6 +35,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('user_payment_histories');
+        Schema::dropIfExists('setting_webs');
     }
 };

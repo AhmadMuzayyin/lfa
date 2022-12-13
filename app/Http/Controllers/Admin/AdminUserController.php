@@ -12,11 +12,6 @@ use Yajra\Datatables\Facades\Datatables;
 
 class AdminUserController extends Controller
 {
-    protected $htmlBuilder;
-    public function __construct(Builder $htmlBuilder)
-    {
-        $this->htmlBuilder = $htmlBuilder;
-    }
     public function index(Request $request)
     {
         $users = User::all();
@@ -66,11 +61,43 @@ class AdminUserController extends Controller
     }
     public function edit($id)
     {
-        dd(User::findOrFail($id));
+        $user = User::firstWhere('id', $id);
+        return view('backpage.admin.users.index', compact('user'));
     }
-    public function update($id)
+    public function update(Request $request, $id)
     {
-        dd(User::findOrFail($id));
+        $user = User::findOrFail($id);
+        try {
+            $request->validate([
+                'Nama_Lengkap' => 'required',
+                'username' => 'required|unique:users,username,' . $id,
+                'email' => 'required|unique:users,email,' . $id,
+                'role' => 'required'
+            ]);
+            if ($request->file('gambar')) {
+                $path = url('uploads/profil/') . $request->file('gambar');
+                if (file_exists($path)) {
+                    unlink($path);
+                }
+            }
+            $user->fullname = $request->Nama_Lengkap;
+            $user->username = $request->username;
+            $user->email = $request->email;
+            $user->role = $request->role;
+            $user->save();
+            return redirect()->back();
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
+    public function updateDetail(Request $request, $id)
+    {
+        $user_detail = UserDetail::findOrFail($id);
+        try {
+            //code...
+        } catch (\Exception $e) {
+            $e->getMessage();
+        }
     }
     public function destroy($id)
     {
