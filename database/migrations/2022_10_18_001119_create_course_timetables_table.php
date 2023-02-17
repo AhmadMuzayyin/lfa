@@ -19,9 +19,8 @@ return new class extends Migration
             $table->foreignIdFor(Course::class)->constrained();
             $table->dateTime('start');
             $table->dateTime('end');
-            $table->string('image');
             $table->text('descrption');
-            $table->boolean('status'); //true (selesai dilaksanakan) false (belum dilaksanakan)
+            $table->enum('status', ['Selesai', 'Belum Selesai']);
             $table->timestamps();
         });
     }

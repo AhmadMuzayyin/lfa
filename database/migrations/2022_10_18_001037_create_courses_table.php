@@ -20,7 +20,10 @@ return new class extends Migration
             $table->string('title');
             $table->string('speaker');
             $table->bigInteger('telepon_speaker');
-            $table->boolean('sistem'); //true (online) false (offline)
+            $table->string('foto_speaker');
+            $table->string('photo')->nullable();
+            $table->enum('sistem', ['Online', 'Offline']);
+            $table->bigInteger('price')->nullable();
             $table->timestamps();
         });
     }

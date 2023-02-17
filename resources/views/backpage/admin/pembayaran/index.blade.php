@@ -2,8 +2,8 @@
 @section('title', 'Data Pembayaran Pengguna | LFA')
 @section('navbar')
     <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle arrow-none {{ Request::is('admin/user') ? 'text-primary' : 'text-dark' }}"
-            href="{{ url('/admin/user') }}" id="topnav-dashboard" role="button">
+        <a class="nav-link dropdown-toggle arrow-none {{ Request::is('admin/pembayaran') ? 'text-primary' : 'text-dark' }}"
+            href="{{ url('/admin/pembayaran') }}" id="topnav-dashboard" role="button">
             <i class='bx bx-user me-2'></i>
             <span key="t-dashboards">Data Pembayaran Pengguna</span>
         </a>
@@ -35,6 +35,7 @@
                                     <tr>
                                         <th>#</th>
                                         <th>Nama Lengkap</th>
+                                        <th>Total Pembayaran</th>
                                         <th>Status Pembayaran</th>
                                         <th>Aksi</th>
                                     </tr>

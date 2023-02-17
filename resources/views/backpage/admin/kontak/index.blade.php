@@ -1,23 +1,16 @@
 @extends('layouts.app')
-@section('title', 'Data Pengguna | LFA')
+@section('title', 'Data Kontak | LFA')
 @section('navbar')
     <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle arrow-none {{ Request::is('admin/user') ? 'text-primary' : 'text-dark' }}"
             href="{{ url('/admin/user') }}" id="topnav-dashboard" role="button">
             <i class='bx bx-user me-2'></i>
-            <span key="t-dashboards">Data Pengguna</span>
-        </a>
-    </li>
-    <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle arrow-none {{ Request::is('admin/user/create') ? 'text-primary' : 'text-dark' }}"
-            href="{{ url('/admin/user/create') }}" id="topnav-dashboard" role="button">
-            <i class='bx bx-user-plus me-2'></i>
-            <span key="t-dashboards">Tambah Pengguna</span>
+            <span key="t-dashboards">Data Kontak</span>
         </a>
     </li>
 @endsection
 @section('dashboard')
-    @if (Request::is('admin/user'))
+    @if (Request::is('admin/kontak'))
         <div class="row">
             <div class="col-12">
                 <div class="page-title-box d-sm-flex align-items-center justify-content-between">
@@ -38,70 +31,24 @@
 
                             {{-- table --}}
                             <div class="table-responsive">
-                                <table class="table" style="width: 100%;" id="datatable">
+                                <table class="table table-striped" style="width: 100%;" id="datatable">
                                     <thead>
                                         <tr>
                                             <th>#</th>
                                             <th>Nama Lengkap</th>
                                             <th>Email</th>
-                                            <th>Status Akun</th>
-                                            <th>Jenis Akun</th>
-                                            <th>Role</th>
-                                            <th>Aksi</th>
+                                            <th>Subjek</th>
+                                            <th>Deskripsi</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach ($users as $user)
-                                            <tr
-                                                class="{{ $user->role == true ? 'table-warning' : ($user->type == true ? 'table-info' : '') }}">
+                                        @foreach ($kontak as $kon)
+                                            <tr>
                                                 <td>{{ $loop->iteration }}</td>
-                                                <td>{{ $user->fullname }}</td>
-                                                <td>{{ $user->email }}</td>
-                                                <td>
-                                                    <form action="{{ url('admin/user/status') }}" method="POST">
-                                                        @csrf
-                                                        <input type="hidden" name="id" value="{{ $user->id }}">
-                                                        <button
-                                                            class="btn btn-sm btn-{{ $user->status == true ? 'primary' : 'danger' }}"
-                                                            {{ $user->role == true ? 'disabled' : '' }}>
-                                                            @if ($user->status == true)
-                                                                <i class='bx bx-user-check'></i>
-                                                            @else
-                                                                <i class='bx bx-user-x'></i>
-                                                            @endif
-                                                        </button>
-                                                        {{ $user->status == true ? 'Aktif' : 'Tidak Aktif' }}
-                                                    </form>
-                                                </td>
-                                                <td>
-                                                    {{ $user->type == true ? 'Premium' : 'Free' }}
-                                                </td>
-                                                <td>
-                                                    {{ $user->role == true ? 'Admin' : 'User' }}
-                                                </td>
-                                                <td>
-                                                    <div class="btn-group" role="group">
-                                                        <button type="button" role="button"
-                                                            class="btn btn-primary open_modal" value="{{ $user->id }}">
-                                                            <i class='bx bx-info-circle'></i>
-                                                        </button>
-                                                        <a href="{{ url('admin/user/edit') . '/' . $user->id }}"
-                                                            role="button" class="btn btn-success">
-                                                            <i class='bx bxs-edit-alt'></i>
-                                                        </a>
-                                                        <form action="{{ url('admin/user/destroy') . '/' . $user->id }}"
-                                                            method="POST">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button type="submit"
-                                                                class="btn btn-danger {{ $user->role == true ? 'disabled' : '' }}"
-                                                                onclick="alert('Yakin untuk menghapus data ini?')"
-                                                                style="border-top-left-radius: 0; border-bottom-left-radius: 0;">
-                                                                <i class='bx bx-trash'></i>
-                                                            </button>
-                                                        </form>
-                                                    </div>
-                                                </td>
+                                                <td>{{ $kon->fullname }}</td>
+                                                <td>{{ $kon->email }}</td>
+                                                <td>{{ $kon->subjek }}</td>
+                                                <td>{{ $kon->deskripsi }}</td>
                                             </tr>
                                         @endforeach
                                     </tbody>

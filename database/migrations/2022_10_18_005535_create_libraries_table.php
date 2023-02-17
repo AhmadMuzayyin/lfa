@@ -24,7 +24,7 @@ return new class extends Migration
             $table->string('image');
             $table->year('published');
             $table->bigInteger('price')->nullable();
-            $table->boolean('status'); //true (stok ada) false (stok kosong)
+            $table->enum('stok', ['Ada', 'Kosong']); //true (stok ada) false (stok kosong)
             $table->timestamps();
         });
     }
